@@ -1,0 +1,4 @@
+0.9.11n
+- NEW: Conditional IoTHub/DPS linking (auto-detect in AZSDK_DIR).
+- FIX: *_Ex API compatibility via header mapping or UMQTT stub.
+- KEEP: parson/uhttp variant detection; link -luci; TLS/SNI options.

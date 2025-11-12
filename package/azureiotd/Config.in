@@ -1,0 +1,74 @@
+#
+# azureiotd package configuration
+#
+menu "Configuration"
+    depends on PACKAGE_azureiotd
+
+config AZUREIOTD_WITH_IOTHUB
+    bool "Enable Azure IoT Hub backend (SDK)"
+    default y
+
+config AZUREIOTD_DPS_REQUIRED
+    bool "Require DPS (provisioning) support"
+    default y
+
+config AZUREIOTD_EXT_AZURE_LIBDIR
+    string "External Azure IoT C SDK lib dir (optional)"
+    default ""
+
+config AZUREIOTD_TLS_MIN_TLS12
+    bool "Enforce minimum TLS 1.2"
+    default y
+
+config AZUREIOTD_CIPHER_WHITELIST
+    string "Cipher suites whitelist (comma-separated, OpenSSL names)"
+    default ""
+
+config AZUREIOTD_TLS_VER_POLICY_WHITELIST
+    bool "Enable TLS version whitelist policy"
+    default n
+
+config AZUREIOTD_TLS_VER_WHITELIST
+    string "TLS versions whitelist (comma-separated)"
+    depends on AZUREIOTD_TLS_VER_POLICY_WHITELIST
+    default "TLSv1.2,TLSv1.3"
+
+config AZUREIOTD_TLS_VER_POLICY_BLACKLIST
+    bool "Enable TLS version blacklist policy"
+    default n
+
+config AZUREIOTD_TLS_VER_BLACKLIST
+    string "TLS versions blacklist (comma-separated)"
+    depends on AZUREIOTD_TLS_VER_POLICY_BLACKLIST
+    default ""
+
+config AZUREIOTD_SNI_ENABLE
+    bool "Enable SNI (Server Name Indication)"
+    default y
+
+config AZUREIOTD_SNI_HOST
+    string "Default SNI hostname (compile-time fallback)"
+    depends on AZUREIOTD_SNI_ENABLE
+    default ""
+
+config AZUREIOTD_CA_FILE
+    string "Default CA file path (compile-time fallback)"
+    default "/etc/ssl/certs/ca-certificates.crt"
+
+config AZUREIOTD_CLIENT_CERT
+    string "Default client certificate path (compile-time fallback)"
+    default ""
+
+config AZUREIOTD_CLIENT_KEY
+    string "Default client private key path (compile-time fallback)"
+    default ""
+
+config AZUREIOTD_CLIENT_KEY_PASS
+    string "Default client key passphrase (compile-time fallback)"
+    default ""
+
+config AZUREIOTD_LOG_TLS_RUNTIME
+    bool "Log selected TLS/SNI/certificate settings at startup"
+    default y
+
+endmenu
