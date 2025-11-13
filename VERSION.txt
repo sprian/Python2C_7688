@@ -1,1 +1,4 @@
-Python2C Bundle Version: 0.9.12b2
+0.9.13
+Release Date: 2025-11-13
+Status: STABLE
+Features: Static linking, ELF header fix, MIPS segfault fix

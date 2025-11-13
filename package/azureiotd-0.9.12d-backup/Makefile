@@ -1,7 +1,8 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=azureiotd
-PKG_VERSION:=0.9.13
+PKG_VERSION:=0.9.12c
+CFLAGS += -DAZUREIOTD_VERSION=\"0.9.12c\"
 PKG_RELEASE:=1
 
 PKG_LICENSE:=MIT
@@ -142,7 +143,6 @@ define Build/Compile
 		-o $(PKG_BUILD_DIR)/azureiotd \
 		$(PKG_BUILD_DIR)/src/azureiotd.c \
 		$(PKG_BUILD_DIR)/src/azure_conn.c \
-        $(PKG_BUILD_DIR)/src/safe_str.c \
 		$(if $(filter 1,$(HAVE_IOTHUB)),-DEVI_USE_IOTHUB_SDK=1,) \
 		-Wl,--start-group \
 		$(if $(filter 1,$(HAVE_IOTHUB)),-liothub_client -liothub_client_mqtt_transport,) \
