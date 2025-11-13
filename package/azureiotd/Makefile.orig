@@ -157,12 +157,12 @@ $(if $(filter 1,$(HAVE_DPS)),-lprov_auth_client -lhsm_security_client,) \
 -luuid -lm -lcurl -lz -lpthread -lrt -luci \
 -Wl,--end-group
 
-   # 编译测试程序 - 版本 0.9.13a
-   $(TARGET_CC) $(TARGET_CFLAGS) $(TARGET_CPPFLAGS) -static \
-   -o $(PKG_BUILD_DIR)/test_enhanced \
-   $(ENHANCED_SRC_FILES) \
-   -lm -lpthread -lrt
-   
+# 编译测试程序 - 版本 0.9.13a
+$(TARGET_CC) $(TARGET_CFLAGS) $(TARGET_CPPFLAGS) -static \
+-o $(PKG_BUILD_DIR)/test_enhanced \
+$(ENHANCED_SRC_FILES) \
+-lm -lpthread -lrt
+
 endef
 
 define Package/azureiotd/install

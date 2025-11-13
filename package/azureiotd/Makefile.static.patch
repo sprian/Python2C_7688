@@ -1,0 +1,21 @@
+--- a/Makefile
++++ b/Makefile
+@@ -110,6 +110,9 @@
+ LIB_DIRS := \
+     -L$(AZ_BUILD_DIR)/iothub_client \
+     -L$(AZ_BUILD_DIR)/provisioning_client \
++    -L$(AZ_BUILD_DIR)/c-utility \
++    -L$(AZ_BUILD_DIR)/umqtt \
++    -L$(AZ_BUILD_DIR)/deps/parson \
+     -L$(AZ_BUILD_DIR)/deps/parson \
+     -L$(AZ_BUILD_DIR)/umqtt \
+     -L$(AZ_BUILD_DIR)/deps/uhttp \
+@@ -117,7 +120,7 @@
+     -L$(SDK_DIR)/staging_dir/target-mipsel_24kec+dsp_uClibc-0.9.33.2/usr/lib
+ 
+ define Build/Compile
+-$(TARGET_CC) $(TARGET_CFLAGS) $(TARGET_CPPFLAGS) $(LIB_DIRS) \
++$(TARGET_CC) $(TARGET_CFLAGS) $(TARGET_CPPFLAGS) -static $(LIB_DIRS) \
+ -o $(PKG_BUILD_DIR)/azureiotd \
+ $(PKG_BUILD_DIR)/src/azureiotd.c \
+ $(PKG_BUILD_DIR)/src/azure_conn.c \

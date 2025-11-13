@@ -1,0 +1,33 @@
+--- a/Makefile
++++ b/Makefile
+@@ -117,10 +117,17 @@
+     -L$(AZ_BUILD_DIR)/deps/uhttp \
+     -L$(AZ_BUILD_DIR)/c-utility \
+     -L$(SDK_DIR)/staging_dir/target-mipsel_24kec+dsp_uClibc-0.9.33.2/usr/lib
++
++# 新增源文件 - 版本 0.9.13a
++ENHANCED_SRC_FILES = \
++    $(PKG_BUILD_DIR)/src/dps_certificate.c \
++    $(PKG_BUILD_DIR)/src/modbus_rtu.c \
++    $(PKG_BUILD_DIR)/src/enhanced_main.c
+  
+ define Build/Compile
+-$(TARGET_CC) $(TARGET_CFLAGS) $(TARGET_CPPFLAGS) $(LIB_DIRS) \
+--o $(PKG_BUILD_DIR)/azureiotd \
++# 編譯增強版本 (靜態連結) - 版本 0.9.13a
++$(TARGET_CC) $(TARGET_CFLAGS) $(TARGET_CPPFLAGS) -static $(LIB_DIRS) \
++-o $(PKG_BUILD_DIR)/azureiotd_enhanced \
+ $(PKG_BUILD_DIR)/src/azureiotd.c \
+ $(PKG_BUILD_DIR)/src/azure_conn.c \
+         $(PKG_BUILD_DIR)/src/safe_str.c \
+@@ -132,6 +139,12 @@
+ -luuid -lm -lcurl -lz -lpthread -lrt -luci \
+ -Wl,--end-group
+ 
++# 編譯測試程序 - 版本 0.9.13a
++$(TARGET_CC) $(TARGET_CFLAGS) $(TARGET_CPPFLAGS) -static \
++-o $(PKG_BUILD_DIR)/test_enhanced \
++$(ENHANCED_SRC_FILES) \
++-lm -lpthread -lrt
++
+ endef
