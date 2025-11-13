@@ -46,9 +46,9 @@ PKG_CONFIG_DEPENDS := \
   CONFIG_AZUREIOTD_LOG_TLS_RUNTIME
 
 define Build/Prepare
-	$(call Build/Prepare/Default)
-	mkdir -p $(PKG_BUILD_DIR)/src/externals/azure_iot
-	$(CP) ./src/* $(PKG_BUILD_DIR)/src/
+$(call Build/Prepare/Default)
+mkdir -p $(PKG_BUILD_DIR)/src/externals/azure_iot
+$(CP) ./src/* $(PKG_BUILD_DIR)/src/
 endef
 
 ######## EVI 0.9.11n conditional detection ########
@@ -137,28 +137,41 @@ LIB_DIRS := \
     -L$(AZ_BUILD_DIR)/c-utility \
     -L$(SDK_DIR)/staging_dir/target-mipsel_24kec+dsp_uClibc-0.9.33.2/usr/lib
 
+# 新增源文件 - 版本 0.9.13a
+ENHANCED_SRC_FILES = \
+    $(PKG_BUILD_DIR)/src/dps_certificate.c \
+    $(PKG_BUILD_DIR)/src/modbus_rtu.c \
+    $(PKG_BUILD_DIR)/src/enhanced_main.c
+
 define Build/Compile
-	$(TARGET_CC) $(TARGET_CFLAGS) $(TARGET_CPPFLAGS) $(LIB_DIRS) \
-		-o $(PKG_BUILD_DIR)/azureiotd \
-		$(PKG_BUILD_DIR)/src/azureiotd.c \
-		$(PKG_BUILD_DIR)/src/azure_conn.c \
+$(TARGET_CC) $(TARGET_CFLAGS) $(TARGET_CPPFLAGS) $(LIB_DIRS) \
+-o $(PKG_BUILD_DIR)/azureiotd \
+$(PKG_BUILD_DIR)/src/azureiotd.c \
+$(PKG_BUILD_DIR)/src/azure_conn.c \
         $(PKG_BUILD_DIR)/src/safe_str.c \
-		$(if $(filter 1,$(HAVE_IOTHUB)),-DEVI_USE_IOTHUB_SDK=1,) \
-		-Wl,--start-group \
-		$(if $(filter 1,$(HAVE_IOTHUB)),-liothub_client -liothub_client_mqtt_transport,) \
-		$(if $(filter 1,$(HAVE_DPS)),-lprov_auth_client -lhsm_security_client,) \
-		-l$(UHTTP_LIB) -l$(PARSON_LIB) -lumqtt -laziotsharedutil -lssl -lcrypto \
-		-luuid -lm -lcurl -lz -lpthread -lrt -luci \
-		-Wl,--end-group
+$(if $(filter 1,$(HAVE_IOTHUB)),-DEVI_USE_IOTHUB_SDK=1,) \
+-Wl,--start-group \
+$(if $(filter 1,$(HAVE_IOTHUB)),-liothub_client -liothub_client_mqtt_transport,) \
+$(if $(filter 1,$(HAVE_DPS)),-lprov_auth_client -lhsm_security_client,) \
+-l$(UHTTP_LIB) -l$(PARSON_LIB) -lumqtt -laziotsharedutil -lssl -lcrypto \
+-luuid -lm -lcurl -lz -lpthread -lrt -luci \
+-Wl,--end-group
+
+# 编译测试程序 - 版本 0.9.13a
+$(TARGET_CC) $(TARGET_CFLAGS) $(TARGET_CPPFLAGS) -static \
+-o $(PKG_BUILD_DIR)/test_enhanced \
+$(ENHANCED_SRC_FILES) \
+-lm -lpthread -lrt
+
 endef
 
 define Package/azureiotd/install
-	$(INSTALL_DIR) $(1)/usr/sbin
-	$(INSTALL_BIN) $(PKG_BUILD_DIR)/azureiotd $(1)/usr/sbin/
-	$(INSTALL_DIR) $(1)/etc/init.d
-	$(INSTALL_BIN) ./files/azureiotd.init $(1)/etc/init.d/azureiotd
-	$(INSTALL_DIR) $(1)/etc/config
-	$(INSTALL_CONF) ./files/azureiotd.config $(1)/etc/config/azureiotd
+$(INSTALL_DIR) $(1)/usr/sbin
+$(INSTALL_BIN) $(PKG_BUILD_DIR)/azureiotd $(1)/usr/sbin/
+$(INSTALL_DIR) $(1)/etc/init.d
+$(INSTALL_BIN) ./files/azureiotd.init $(1)/etc/init.d/azureiotd
+$(INSTALL_DIR) $(1)/etc/config
+$(INSTALL_CONF) ./files/azureiotd.config $(1)/etc/config/azureiotd
 endef
 
 $(eval $(call BuildPackage,azureiotd))
